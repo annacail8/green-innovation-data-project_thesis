@@ -11,7 +11,7 @@ library(plm)
 library(stargazer)
 library(fixest)
 
-final_df <- read.csv("C:\\Users\\Utente\\Desktop\\Data Thesis\\final_df_all.csv", sep = ",")
+final_df <- read.csv("C:\\Users\\Utente\\Documents\\GitHub\\green-innovation-data-project\\processed_data\\final_df_all.csv", sep = ",")
 
 eu <- final_df |> 
   filter(year %in% 1995:2019)
@@ -30,20 +30,17 @@ pdata_final <- pdata.frame(eu, index = c("country", "year"))
 library(naniar)
 vis_miss(pdata_final)
 
-
-
-
 # check NAs
 
-sum(is.na(pdata_all))
+sum(is.na(pdata_final))
 
-sapply(pdata_all, anyNA)
-sapply(pdata_all, function(x) sum(is.na(x)))
+sapply(pdata_final, anyNA)
+sapply(pdata_final, function(x) sum(is.na(x)))
 
 ## how many rows I loose because of NAs?
-pdata_NAs <- pdata_all[complete.cases(pdata_all), ]
+pdata_NAs <- pdata_final[complete.cases(pdata_final),]
 
-colSums(is.na(pdata_all))
+colSums(is.na(pdata_final))
 
 
 library(summarytools)
@@ -224,7 +221,6 @@ stargazer(model2, model3, model4, model5,
           omit.stat = c("ll", "aic", "bic"),
           no.space = TRUE)
 
-##### problem with NAs
 
 ############################### TRY WITH FE ####################################
 
@@ -237,8 +233,8 @@ summary(model_fixest, robust = TRUE)
 
 ## check variable with NA or 0
 
-sapply(pdata_all, function(x) sum(is.na(x)))
-sapply(pdata_all, function(x) sum(x == 0, na.rm = TRUE))
+sapply(pdata_final, function(x) sum(is.na(x)))
+sapply(pdata_final, function(x) sum(x == 0, na.rm = TRUE))
 
 
 model_fixest2 <- feols(log(green_patents) ~ log(rd) + log(en_taxes2) + log(gas_price) + log(co2) + log(fdi) +

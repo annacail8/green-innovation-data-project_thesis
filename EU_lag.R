@@ -12,7 +12,7 @@ library(stargazer)
 library(kableExtra)
 library(fixest)
 
-final_df <- read.csv("C:\\Users\\Utente\\Desktop\\Data Thesis\\final_df_all.csv", sep = ",")
+final_df <- read.csv("C:\\Users\\Utente\\Documents\\GitHub\\green-innovation-data-project\\processed_data\\final_df_all.csv", sep = ",")
 
 
 pdata_final <- final_df |>
