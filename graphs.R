@@ -11,7 +11,7 @@ library(corrplot)
 
 # Load the dataset
 
-df <- read.csv("C:\\Users\\Utente\\Desktop\\Data Thesis\\final_df_eu.csv", sep = ",")
+df <- read.csv("C:/Users/Utente/Documents/GitHub/green-innovation-data-project/processed_data/final_df_eu.csv", sep = ",")
 
 tot_pat <- read.csv("tot_pat.csv", sep = ";") |> 
   rename(
@@ -109,7 +109,12 @@ ggplot() +
   ) +
   theme_minimal()
 
-ggsave("eu_trends.png", width = 10, height = 6, bg = "white")
+ggsave(
+  "C:/Users/Utente/Documents/GitHub/green-innovation-data-project/graphs/eu_trends.png",
+  width = 10,
+  height = 6,
+  bg = "white"
+)
 
  ## time series to investigate the relationship between variables
 
@@ -154,10 +159,16 @@ ggplot() +
 
 #### for all countries
 
-df1 <- read.csv("C:\\Users\\Utente\\Desktop\\Data Thesis\\final_df_all.csv", sep = ",")
+stand_trends <- ggsave(
+  "C:/Users/Utente/Documents/GitHub/green-innovation-data-project/graphs/stand_trends.png",
+  width = 10,
+  height = 6,
+  bg = "white"
+)
 
-df1 <- df1 |> 
-  filter(year %in% c(2019))
+
+df1 <- read.csv("C:/Users/Utente/Documents/GitHub/green-innovation-data-project/processed_data/final_df_all.csv", sep = ",") |>
+  filter(year == 2019)
 
 library(ggrepel)
 library(countrycode)
@@ -169,14 +180,16 @@ library(htmlwidgets)
 
 library(countrycode)
 
-df1$iso2 <- countrycode(df1$country, origin = "country.name", destination = "iso2c")ggplot(df1, aes(x = rd, y = green_patents)) +
+df1$iso2 <- countrycode(df1$country, origin = "country.name", destination = "iso2c") 
+
+ggplot(df1, aes(x = rd, y = green_patents)) +
   geom_vline(xintercept = median(log(df1$rd), na.rm = TRUE) %>% log10(), 
              linetype = "dashed", color = "red") +
   geom_hline(yintercept = median(log(df1$green_patents), na.rm = TRUE) %>% log10(), 
              linetype = "dashed", color = "red") +
   geom_smooth(method = "lm", se = FALSE, formula = y ~ x) + 
   geom_point() +
-  geom_flag(aes(country = iso2), size = 10) +
+  #geom_flag(aes(country = iso2), size = 10) +
   scale_x_log10() +
   scale_y_log10() +
   theme_minimal() + 
@@ -198,7 +211,19 @@ library(ggplot2)
 library(ggrepel)
 library(scales)
 
-df1 <- df1 %>%
+df <- df %>%
+  mutate(
+    rd = as.numeric(rd),
+    population = as.numeric(population),
+    green_patents = as.numeric(green_patents)
+  )
+class(df$rd)
+class(df$population)
+class(df$green_patents)
+
+str(df$rd)
+
+df1_pc <- df1 %>%
   mutate(
     rd_pc = rd / (population / 1e6),         # R&D per million people
     green_pc = green_patents / (population / 1e6),
@@ -206,7 +231,7 @@ df1 <- df1 %>%
     green_million = green_pc * 1e6          # back to absolute green patents
   )
 
-rd <- ggplot(df1, aes(x = rd_pc, y = green_pc)) +
+rd <- ggplot(df1_pc, aes(x = rd_pc, y = green_pc)) +
   # reference lines at median per-million values
   geom_vline(xintercept = median(df1$rd_pc, na.rm = TRUE),
              linetype = "dashed", color = "red", linewidth = 0.7) +
@@ -259,7 +284,7 @@ rd <- ggplot(df1, aes(x = rd_pc, y = green_pc)) +
 rd
 
 
-ggsave("rd_patents.png", width = 10, height = 6, bg = "white")
+ggsave("C:/Users/Utente/Documents/GitHub/green-innovation-data-project/graphs/country_trends_rd.png", width = 10, height = 6, bg = "white")
 
 df1 <- df1 %>%
   mutate(
@@ -319,7 +344,7 @@ env <- ggplot(df1, aes(x = en_taxes_pc, y = green_pc)) +
 
 env
 
-ggsave("en_taxes_patents.png", width = 10, height = 6, bg = "white")
+ggsave("C:/Users/Utente/Documents/GitHub/green-innovation-data-project/graphs/country_trends_envtax.png", width = 10, height = 6, bg = "white")
 
 library(patchwork)
 
@@ -332,5 +357,5 @@ combined_plot <- rd + env +
 
 combined_plot
 
-ggsave("combined_patents.png", width = 10, height = 12, bg = "white")
+ggsave("C:/Users/Utente/Documents/GitHub/green-innovation-data-project/graphs/combined_patents.png", width = 10, height = 12, bg = "white")
 
