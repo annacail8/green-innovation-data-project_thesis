@@ -11,7 +11,7 @@ library(plm)
 library(stargazer)
 library(fixest)
 
-final_df <- read.csv("C:\\Users\\Utente\\Desktop\\Data Thesis\\final_df_all.csv", sep = ",")
+final_df <- read.csv("C:\\Users\\Utente\\Documents\\GitHub\\green-innovation-data-project\\processed_data\\final_df_all.csv", sep = ",")
 
 eu <- final_df |> 
   filter(year %in% 1995:2019)
@@ -278,35 +278,6 @@ etable(model_polluted_het, model_poll2, model_poll3,
        fitstat = ~ n + r2 + f,
        tex = TRUE)
 
-
-pdata_all <- pdata_all %>%
-  mutate(group = case_when(
-    rich == 1 & polluted == 1 ~ "Rich & Polluted",
-    rich == 1 & polluted == 0 ~ "Rich & Clean",
-    rich == 0 & polluted == 1 ~ "Poor & Polluted",
-    rich == 0 & polluted == 0 ~ "Poor & Clean"
-  )) %>%
-  mutate(group = factor(group, levels = c("Rich & Polluted", "Rich & Less Polluted",
-                                          "Poor & Polluted", "Poor & Less Polluted")))
-
-pdata_all <- pdata_all %>%
-  mutate(year = as.numeric(as.character(year)))
-
-ggplot(pdata_all, aes(x = year, y = log(green_patents + 1), color = group)) +
-  stat_summary(fun = "mean", geom = "line", size = 1.2) +
-  labs(
-    title = "Average Green Patents by Country Group",
-    subtitle = "Rich/Poor × Polluted/Clean classification",
-    x = "Year", y = "Log(Average Green Patents)"
-  ) +
-  scale_color_manual(values = c(
-    "Rich & Polluted" = "#E64B35",
-    "Rich & Clean" = "#4DBBD5",
-    "Poor & Polluted" = "#00A087",
-    "Poor & Clean" = "#3C5488"
-  )) +
-  theme_minimal(base_size = 14) +
-  theme(legend.position = "bottom", legend.title = element_blank())
 
 # Save the results to a LaTeX file
 
